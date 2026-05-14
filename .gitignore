@@ -64,3 +64,6 @@ coverage.xml
 # Databases
 *.db
 *.sqlite*
+
+# Windows reserved names
+nul
