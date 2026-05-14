@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #050a0c;
+      font-family: "Barlow", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .scene {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+    }
+
+    #s1 { z-index: 1; }
+    #s2 { z-index: 2; opacity: 0; }
+    #s3 { z-index: 3; opacity: 0; }
+    #s4 { z-index: 4; opacity: 0; }
+
+    /* ---- Background Decoratives ---- */
+    .glow-cyan {
+      position: absolute;
+      width: 800px; height: 800px;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.12;
+      background: radial-gradient(circle, #22D3EE, #22D3EE00);
+    }
+
+    .glow-lime {
+      position: absolute;
+      width: 550px; height: 550px;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.10;
+      background: radial-gradient(circle, #A3E635, #A3E63500);
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1920px; height: 1080px;
+      opacity: 0.04;
+      background-image:
+        linear-gradient(rgba(34,211,238,0.6) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,211,238,0.6) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    /* ---- Shared Type ---- */
+    .f-hl {
+      font-family: "Barlow", sans-serif;
+      font-weight: 800;
+      color: #A3E635;
+      letter-spacing: 0.025em;
+    }
+
+    .f-sub {
+      font-family: "Barlow", sans-serif;
+      font-weight: 400;
+      color: #22D3EE;
+      letter-spacing: 0.06em;
+    }
+
+    .f-body {
+      font-family: "Barlow", sans-serif;
+      font-weight: 300;
+      color: #94a3b8;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .f-mono {
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+      color: #A3E635;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .deco-line {
+      width: 100px;
+      height: 3px;
+      background: #A3E635;
+      border-radius: 2px;
+    }
+
+    /* ---- Scene 1: Title Reveal ---- */
+    .s1-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+      height: 100%;
+      padding: 0 180px;
+      gap: 18px;
+    }
+
+    .s1-main {
+      font-size: 200px;
+      line-height: 0.88;
+    }
+
+    .s1-sub {
+      font-size: 52px;
+      opacity: 0.92;
+    }
+
+    .s1-tag {
+      font-size: 26px;
+      margin-top: 28px;
+    }
+
+    /* ---- Scene 2: Metric Cards ---- */
+    .s2-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 60px 90px;
+      gap: 40px;
+      box-sizing: border-box;
+    }
+
+    .m-card {
+      flex: 1;
+      max-width: 460px;
+      background: rgba(6,16,22,0.88);
+      border: 2px solid rgba(34,211,238,0.18);
+      border-radius: 6px;
+      padding: 50px 56px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    .m-label {
+      font-family: "Barlow", sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      color: #22D3EE;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .m-value {
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+      font-size: 88px;
+      color: #A3E635;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .m-unit {
+      font-family: "Barlow", sans-serif;
+      font-weight: 300;
+      font-size: 22px;
+      color: #8896aa;
+      letter-spacing: 0.04em;
+    }
+
+    .zone-bars {
+      display: flex;
+      gap: 3px;
+      height: 10px;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .zone-seg {
+      height: 100%;
+      border-radius: 1px;
+      opacity: 0.25;
+    }
+
+    .zone-seg.on {
+      opacity: 1;
+    }
+
+    .zone-label {
+      font-family: "Barlow", sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      color: #8896aa;
+      margin-top: 4px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ---- Scene 3: Bar Chart ---- */
+    .s3-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 90px 180px;
+      box-sizing: border-box;
+    }
+
+    .s3-title {
+      font-family: "Barlow", sans-serif;
+      font-weight: 800;
+      font-size: 44px;
+      color: #22D3EE;
+      letter-spacing: 0.06em;
+      margin-bottom: 64px;
+    }
+
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 52px;
+      height: 560px;
+      padding-bottom: 3px;
+      border-bottom: 2px solid rgba(34,211,238,0.15);
+      position: relative;
+    }
+
+    .bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      max-width: 136px;
+    }
+
+    .bar-num {
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+      font-size: 26px;
+      color: #A3E635;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .bar-shape {
+      width: 100%;
+      max-width: 128px;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, #A3E635 0%, #22D3EE 100%);
+      transform-origin: bottom center;
+    }
+
+    .bar-name {
+      font-family: "Barlow", sans-serif;
+      font-weight: 600;
+      font-size: 20px;
+      color: #8896aa;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ---- Scene 4: Final Card ---- */
+    .s4-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      gap: 22px;
+      padding: 60px;
+    }
+
+    .s4-main {
+      font-size: 164px;
+    }
+
+    .s4-tag {
+      font-size: 28px;
+      letter-spacing: 0.14em;
+    }
+
+    .s4-mark {
+      display: flex;
+      gap: 18px;
+      align-items: flex-end;
+    }
+
+    .s4-bar {
+      border-radius: 4px;
+    }
+
+    .s4-bar.a {
+      width: 8px; height: 76px;
+      background: #A3E635;
+    }
+
+    .s4-bar.b {
+      width: 8px; height: 48px;
+      background: #22D3EE;
+    }
+
+    .s4-bar.c {
+      width: 8px; height: 60px;
+      background: #A3E635;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+<div
+  id="root"
+  data-composition-id="main"
+  data-width="1920"
+  data-height="1080"
+  data-start="0"
+  data-duration="10"
+>
+
+  <!-- ===== SCENE 1 — 0–2s ===== -->
+  <div id="s1" class="scene">
+    <div class="glow-cyan" style="top:-180px; left:260px;"></div>
+    <div class="glow-lime" style="bottom:-120px; right:100px;"></div>
+    <div class="grid-overlay"></div>
+    <div class="s1-content">
+      <div class="f-hl s1-main" id="s1t">PULSERUN</div>
+      <div class="f-sub s1-sub" id="s1s">ANALYTICS</div>
+      <div class="deco-line" id="s1l"></div>
+      <div class="f-body s1-tag" id="s1g">Performance Meets Precision</div>
+    </div>
+  </div>
+
+  <!-- ===== SCENE 2 — 2–6s ===== -->
+  <div id="s2" class="scene">
+    <div class="glow-cyan" style="top:45%; left:-160px; opacity:0.06;"></div>
+    <div class="glow-lime" style="bottom:-60px; right:-80px; opacity:0.05;"></div>
+    <div class="grid-overlay" style="opacity:0.02;"></div>
+    <div class="s2-content">
+      <div class="m-card" id="mc1">
+        <div class="m-label">Weekly Distance</div>
+        <div class="m-value">48.2</div>
+        <div class="m-unit">kilometers</div>
+      </div>
+      <div class="m-card" id="mc2">
+        <div class="m-label">Average Pace</div>
+        <div class="m-value">4:52</div>
+        <div class="m-unit">minutes / km</div>
+      </div>
+      <div class="m-card" id="mc3">
+        <div class="m-label">Heart Rate Zones</div>
+        <div class="m-value">Z3</div>
+        <div class="m-unit">aerobic &mdash; 152–171 bpm</div>
+        <div class="zone-bars" id="zbar">
+          <div class="zone-seg" style="flex:15; background:#64748b;"></div>
+          <div class="zone-seg" style="flex:20; background:#22D3EE;"></div>
+          <div class="zone-seg on" style="flex:30; background:#A3E635;"></div>
+          <div class="zone-seg" style="flex:20; background:#F59E0B;"></div>
+          <div class="zone-seg" style="flex:15; background:#EF4444;"></div>
+        </div>
+        <div class="zone-label">Z1&nbsp;&nbsp;Z2&nbsp;&nbsp;<span style="color:#A3E635;">Z3</span>&nbsp;&nbsp;Z4&nbsp;&nbsp;Z5</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCENE 3 — 6–9s ===== -->
+  <div id="s3" class="scene">
+    <div class="glow-cyan" style="top:-80px; right:-80px; opacity:0.05;"></div>
+    <div class="grid-overlay" style="background-size:60px 60px; opacity:0.025;"></div>
+    <div class="s3-content">
+      <div class="s3-title" id="s3t">Monthly Distance</div>
+      <div class="chart" id="chart">
+        <div class="bar-col" id="bc0">
+          <div class="bar-num">192</div>
+          <div class="bar-shape" style="height:310px;"></div>
+          <div class="bar-name">Jan</div>
+        </div>
+        <div class="bar-col" id="bc1">
+          <div class="bar-num">215</div>
+          <div class="bar-shape" style="height:348px;"></div>
+          <div class="bar-name">Feb</div>
+        </div>
+        <div class="bar-col" id="bc2">
+          <div class="bar-num">248</div>
+          <div class="bar-shape" style="height:398px;"></div>
+          <div class="bar-name">Mar</div>
+        </div>
+        <div class="bar-col" id="bc3">
+          <div class="bar-num">231</div>
+          <div class="bar-shape" style="height:372px;"></div>
+          <div class="bar-name">Apr</div>
+        </div>
+        <div class="bar-col" id="bc4">
+          <div class="bar-num">267</div>
+          <div class="bar-shape" style="height:428px;"></div>
+          <div class="bar-name">May</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCENE 4 — 9–10s ===== -->
+  <div id="s4" class="scene">
+    <div class="glow-cyan" style="top:50%; left:50%; width:900px; height:900px; opacity:0.08;"></div>
+    <div class="s4-content">
+      <div class="s4-mark" id="s4m">
+        <div class="s4-bar a"></div>
+        <div class="s4-bar b"></div>
+        <div class="s4-bar c"></div>
+      </div>
+      <div class="f-hl s4-main" id="s4t">PULSERUN</div>
+      <div class="f-body s4-tag" id="s4g">Performance Meets Precision</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  // === SCENE 1: Title Reveal ===
+  tl.fromTo("#s1t", { y: 60, opacity: 0, filter: "blur(12px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.75, ease: "expo.out" }, 0.1);
+  tl.fromTo("#s1s", { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.35);
+  tl.fromTo("#s1l", { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power4.out" }, 0.55);
+  tl.fromTo("#s1g", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.75);
+
+  // Ambient — cyan glow breathing
+  tl.to("#s1 .glow-cyan", { scale: 1.10, opacity: 0.15, duration: 1.4, ease: "sine.inOut" }, 0);
+  tl.to("#s1 .glow-cyan", { scale: 1, opacity: 0.12, duration: 1.4, ease: "sine.inOut" }, 1.4);
+
+  // === TRANSITION 1: Zoom Through (s1 → s2) ===
+  tl.to("#s1", { scale: 2.2, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 1.65);
+  tl.fromTo("#s2",
+    { scale: 0.55, opacity: 0, filter: "blur(8px)" },
+    { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 1.8);
+  // === SCENE 2: Metric Cards ===
+  tl.fromTo("#mc1", { y: 50, opacity: 0, scale: 0.93 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" }, 2.05);
+  tl.fromTo("#mc2", { y: 50, opacity: 0, scale: 0.93 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" }, 2.25);
+  tl.fromTo("#mc3", { y: 50, opacity: 0, scale: 0.93 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" }, 2.45);
+
+  // Ambient — subtle drift
+  tl.to("#s2 .glow-cyan", { x: 30, opacity: 0.09, duration: 2.0, ease: "sine.inOut" }, 2.0);
+  tl.to("#s2 .glow-cyan", { x: 0, opacity: 0.06, duration: 2.0, ease: "sine.inOut" }, 4.0);
+  tl.to("#s2 .glow-lime", { scale: 1.12, duration: 2.8, ease: "sine.inOut" }, 2.0);
+  tl.to("#s2 .glow-lime", { scale: 1, duration: 2.8, ease: "sine.inOut" }, 4.8);
+
+  // === TRANSITION 2: Blur Crossfade (s2 → s3) ===
+  tl.to("#s2", { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.5, ease: "power2.inOut" }, 5.6);
+  tl.fromTo("#s3",
+    { filter: "blur(10px)", scale: 0.97, opacity: 0 },
+    { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.5, ease: "power2.inOut" }, 5.7);
+  // === SCENE 3: Bar Chart ===
+  tl.fromTo("#s3t", { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 6.15);
+
+  // Bars grow upward with staggered entry
+  const cols = ["#bc0", "#bc1", "#bc2", "#bc3", "#bc4"];
+  cols.forEach((sel, i) => {
+    tl.fromTo(sel + " .bar-shape",
+      { scaleY: 0 },
+      { scaleY: 1, duration: 0.7, ease: "back.out(1.5)" }, 6.35 + i * 0.14);
+    tl.fromTo(sel + " .bar-num",
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 6.55 + i * 0.14);
+  });
+
+  // Ambient — glow pulse
+  tl.to("#s3 .glow-cyan", { scale: 1.13, opacity: 0.09, duration: 1.5, ease: "sine.inOut" }, 6.0);
+  tl.to("#s3 .glow-cyan", { scale: 1, opacity: 0.05, duration: 1.5, ease: "sine.inOut" }, 7.5);
+
+  // === TRANSITION 3: Crossfade (s3 → s4) ===
+  tl.to("#s3", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 8.6);
+  tl.fromTo("#s4", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 8.6);
+  // === SCENE 4: Final Title Card ===
+  tl.fromTo("#s4m", { scaleY: 0, opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.45, ease: "back.out(1.8)" }, 9.05);
+  tl.fromTo("#s4t", { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "expo.out" }, 9.15);
+  tl.fromTo("#s4g", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 9.35);
+  // Fade to black
+  tl.to("#s4", { opacity: 0, duration: 0.35, ease: "power3.in" }, 9.65);
+
+  window.__timelines["main"] = tl;
+</script>
+
+</body>
+</html>
