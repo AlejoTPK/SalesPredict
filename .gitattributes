@@ -1,0 +1,11 @@
+# Mark rendered and compiled HTML as generated to exclude them from language statistics
+**/renders/** linguist-generated=true
+**/compiled/** linguist-generated=true
+
+# Mark agent skills and internal assets as vendor code
+.agents/** linguist-vendor=true
+
+# Ensure videos and other assets are handled as binary
+*.mp4 binary
+*.mov binary
+*.webm binary
