@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Node
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*.local
+!.env.example
+
+# Docker
+docker/postgres_data/
+docker/redis_data/
+docker/qdrant_data/
+docker/mlflow_data/
+
+# ML
+ml-pipelines/models/
+ml-pipelines/**/mlruns/
+mlruns/
+
+# Logs
+*.log
+logs/
+
+# Poetry
+poetry.lock
+backend/poetry.lock
+ml-pipelines/poetry.lock
+
+# Alembic
+backend/alembic/versions/*.pyc
+
+# Coverage
+htmlcov/
+.coverage
+coverage.xml
+
+# Databases
+*.db
+*.sqlite*
