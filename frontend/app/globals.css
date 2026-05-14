@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-page: 240 20% 8%;
+    --bg-sidebar: 240 18% 11%;
+    --bg-card: 240 16% 14%;
+    --bg-card-header: 240 18% 12%;
+    --bg-hover: 240 15% 18%;
+    --bg-table-alt: 240 14% 16%;
+    --bg-input: 240 16% 14%;
+
+    --text-primary: 35 40% 88%;
+    --text-secondary: 30 15% 62%;
+    --text-muted: 30 10% 45%;
+
+    --gold: 35 55% 58%;
+    --gold-light: 35 60% 68%;
+    --gold-dark: 35 50% 45%;
+    --red: 0 40% 42%;
+    --red-light: 0 50% 55%;
+    --purple: 270 30% 45%;
+    --purple-light: 270 35% 55%;
+    --green: 140 30% 42%;
+    --green-light: 140 35% 52%;
+
+    --border: 240 12% 22%;
+    --border-light: 240 10% 28%;
+    --ring: 35 55% 58%;
+
+    --radius: 6px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-[hsl(var(--bg-page))] text-[hsl(var(--text-primary))];
+    font-family: var(--font-body), sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading), sans-serif;
+  }
+  code, pre, kbd {
+    font-family: var(--font-mono), monospace;
+  }
+}
+
+@layer components {
+  .quest-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .quest-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--bg-page));
+  }
+  .quest-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  .quest-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--gold) / 0.4);
+  }
+}
